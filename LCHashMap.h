@@ -255,7 +255,7 @@ bool LCHashMap<Key, Value, HashFn, Equator>::erase(const Key& key)
 
 	// [jrm] this is probably wrong...
 	// While 
-	while (iter != bucket.end() && (*iter).first != key)
+	while (iter != bucket.end() && !equal_((*iter).first, key))
 	{
 		++iter;
 	}
