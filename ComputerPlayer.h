@@ -84,29 +84,6 @@ private:
 	*/
 	virtual AIMove findHumanMove(Board& board);
 
-	/** 
-	Get the best move for the given player for the given board.
-
-	@param board The board to play
-	@param player The player whose turn it is.
-	*/
-	AIMove getBestMove(Board& board, Board::Piece player);
-
-	/**
-	Helper functio for getBestMove
-	*/
-	AIMove getBestMoveAux(Board& board, Board::Piece player);
-
-	/**
-	Get the moves and their scores for the player on the given board.
-
-	@param board The board to get the moves for.
-	@param player The player to get the moves for.
-	@param moves The vector of moves.
-	*/
-	void getMoves(Board& board, Board::Piece player,
-		std::vector<AIMove>& moves);
-
 	/**
 	Determine if the player can make a move to win the game on the
 	board. If he can, set the best move to that move. 
