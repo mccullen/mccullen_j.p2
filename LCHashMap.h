@@ -182,6 +182,7 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 
 	// While not at the end of the bucket AND
 	// you have not yet found the key in the bucket.
+	// [jrm] flag.
 	while (iter != bucket.end() && !retVal)// && !equal_((*iter).first, key))
 	{
 		// if the key is in the bucket, return true
@@ -194,7 +195,7 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 	return retVal;//iter != bucket.end();
 }
 
-/* constructor */
+/* constructor [jrm] can you resize in a more efficient way? */
 template <typename Key, typename Value, typename HashFn,
 	typename Equator>
 LCHashMap<Key, Value, HashFn, Equator>::LCHashMap() : size_(0)
@@ -210,37 +211,6 @@ template <typename Key, typename Value, typename HashFn,
 bool LCHashMap<Key, Value, HashFn, Equator>::insert(
 	const Key& key, const Value& value)
 {
-	/*
-	bool retVal = false;
-
-	// Compute the key's hash code
-	size_t hashCode = hashFn_(key);
-
-	// Compress it to determine the bucket
-	size_t index = compress(hashCode);
-
-	// Get bucket
-	std::list<std::pair<Key,Value> >& bucket = 
-		table_[index];
-
-	for (typename std::list<std::pair<Key,Value> >::
-		iterator iter = bucket.begin();
-		iter != bucket.end(); ++iter)
-	{
-		if (equal_((*iter).first, key))
-		{
-			return false;
-		}
-	}
-	bucket.push_back(std::pair<Key,Value>(key,value));
-	++size_;
-	if (size_ > table_.size())
-	{
-		rehash();
-	}
-	return true;
-	*/
-
 	bool retVal = false;
 
 	// Compute the key's hash code
@@ -254,21 +224,17 @@ bool LCHashMap<Key, Value, HashFn, Equator>::insert(
 	if (!contains(bucket, key))
 	{
 		//insert the entry into the bucket's chain.
-		//(table_[index])[key] = value;
-		//(table_[index]).insert(std::pair<Key,Value>(key,value));
-		//std::list<std::pair<Key,Value> >& bucket = table_[index];
-		//bucket[key] = value;
 		bucket.push_back(std::pair<Key,Value>(key,value));
 		retVal = true;
 		++size_;
 
+		// If the size_ is greater than the table's size.
 		if (size_ > table_.size())
 		{
+			// rehash
 			rehash();
 		}
 	}
-
-
 	return retVal;
 }
 
@@ -286,6 +252,9 @@ bool LCHashMap<Key, Value, HashFn, Equator>::erase(const Key& key)
 	std::list<std::pair<Key,Value> >& bucket = table_[index];
 	typename std::list<std::pair<Key,Value> >::iterator iter = 
 		bucket.begin();
+
+	// [jrm] this is probably wrong...
+	// While 
 	while (iter != bucket.end() && (*iter).first != key)
 	{
 		++iter;
