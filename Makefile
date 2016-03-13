@@ -3,7 +3,7 @@
 # Description: Tic-tac toe makefile
 
 CC = g++
-CFLAGS = -g #-Wall
+CFLAGS = -g -Wall
 
 all: ticTacToe tests
 

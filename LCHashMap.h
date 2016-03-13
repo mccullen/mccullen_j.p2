@@ -76,7 +76,7 @@ private:
 
 	// Large prime number to determine the inital size
 	// of the table.
-	static const int LARGE_PRIME = 5;//16908799;
+	static const int LARGE_PRIME = 16908799;
 
 	/**
 	rehash
