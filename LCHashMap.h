@@ -1,13 +1,13 @@
 /**
 Name: Jeff McCullen and Emma Elliott
 Date: March 1, 2016
-Description: 
-Equator is a functor that checks of something of type Key are equal.
-It is a comparator that checks for equality
-
-Key and Value in insert should be references?
-
-
+Description: Prototype and implementation for LCHashMap. This map 
+uses a hash table to store key-value pairs. It is implemented using
+the chaining method for hashing. The Key type is the 
+key, which must be unique. The Value is the the value that the
+Key maps to. The HashFn type is a functor that returns the
+hash code for the Key. The Equator type is a functor used
+to determine if two keys are equivalent.
 */
 #ifndef LC_HASH_MAP_H
 #define LC_HASH_MAP_H
@@ -60,11 +60,22 @@ public:
 
 private:
 
+	// Variable for the hash table
 	std::vector<std::list<std::pair<Key, Value> > > table_;
+
+	// Variable for the size of the table. This stores
+	// the number of key-value pairs that have been inserted
+	// into the table. 
 	size_t size_;
+
+	// Functor to get the hash code for the key.
 	HashFn hashFn_;
+
+	// Functor to determine if two keys are equivalent. 
 	Equator equal_;
 
+	// Large prime number to determine the inital size
+	// of the table.
 	static const int LARGE_PRIME = 5;//16908799;
 
 	/**
@@ -114,46 +125,32 @@ template <typename Key, typename Value, typename HashFn,
 	typename Equator>
 void LCHashMap<Key, Value, HashFn, Equator>::rehash()
 {
-
-	/*
-	typename std::vector<std::list<std::pair<Key,Value> > > v(nextPrime(table_.size()), 
-		std::list<std::pair<Key,Value> >());
-
-	for (size_t i = 0; i < table_.size(); ++i)
-	{
-		for (typename std::list<std::pair<Key,Value> >::iterator it = table_[i].begin();
-			it != table_[i].end(); ++it)
-		{
-			size_t hashCode = hashFn_((*it).first);
-			size_t index = compress(hashCode);
-			v[index].push_back(std::pair<Key,Value>((*it).first,(*it).second));
-		}
-	}
-	table_ = v;
-	*/
-
-
+	// Create a new table that is a copy of the original.
 	std::vector<std::list<std::pair<Key, Value> > > oldTable = table_;
+
 	//std::vector<std::list<std::pair<Key, Value> > > oldTable;
 	//std::swap(oldTable, table_);
 
-	// [jrm] Use next prime here
+	// Resize the table to the next prime above the doubled size.
 	table_.resize(nextPrime(2 * table_.size()));
 	
+	// Clear the table so it is not empty and at least twice the size.
 	clear();
 
+	// Insert all the entries back into the table. Note that inserting
+	// will result in rehashing each one in accordance with the new
+	// table size.
+
+	// For every bucket in the old table
 	for (size_t i = 0; i < oldTable.size(); ++i)
 	{
 		typename std::list<std::pair<Key,Value> >& bucket = oldTable[i];
-		/*
-		for (typename std::list<std::pair<Key,Value> >::
-			const_iterator iter = (oldTable[i]).begin();
-			iter != (oldTable[i]).end(); ++iter)
-		*/
+		// For every link in the bucket
 		for (typename std::list<std::pair<Key,Value> >::
 			const_iterator iter = bucket.begin();
 			iter != bucket.end(); ++iter)
 		{
+			// insert it into the table.
 			insert((*iter).first, (*iter).second);
 		}
 	}
@@ -170,6 +167,9 @@ size_t LCHashMap<Key, Value, HashFn, Equator>::compress(
 	return hashCode % table_.size();
 }
 
+/**
+Return true if the key is in the bucket.
+*/
 template <typename Key, typename Value, typename HashFn,
 	typename Equator>
 bool LCHashMap<Key,Value,HashFn,Equator>::contains(
@@ -180,8 +180,11 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 	typename std::list<std::pair<Key,Value> >::const_iterator iter = 
 		bucket.begin();
 
+	// While not at the end of the bucket AND
+	// you have not yet found the key in the bucket.
 	while (iter != bucket.end())// && !equal_((*iter).first, key))
 	{
+		// if the key is in the bucket, return true
 		if (equal_((*iter).first,key))
 		{
 			retVal = true;
