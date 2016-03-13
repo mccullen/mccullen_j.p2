@@ -60,6 +60,15 @@ public:
 	square.
 	*/
 	bool operator==(const Board& rhs) const;
+
+	/**
+	Determine wheather two boards are not equivalent. They are 
+	not equivalent if any of the squares have a different piece.
+
+	@param rhs The board on the right hand side.
+	@return True if the lhs and rhs board do not have the same 
+	piece in every square.
+	*/
 	bool operator!=(const Board& rhs) const;
 
 	// places the given piece in the given position

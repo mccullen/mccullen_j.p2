@@ -130,6 +130,14 @@ bool Board::operator==(const Board& rhs) const
 	return retVal;
 }
 
+/**
+Determine wheather two boards are not equivalent. They are 
+not equivalent if any of the squares have a different piece.
+
+@param rhs The board on the right hand side.
+@return True if the lhs and rhs board do not have the same 
+piece in every square.
+*/
 bool Board::operator!=(const Board& rhs) const
 {
 	return !(*this == rhs);
@@ -208,25 +216,38 @@ size_t Board::hash() const
 	- Convert to an int
 	*/
 	size_t hashCode = 0;
+	const size_t X_VAL = 1;
+	const size_t O_VAL = 2;
+	const size_t NONE_VAL = 0;
 
+	// For every row
 	for (size_t row = 0; row < Board::MAX_ROWS; ++row)
 	{
+		// For every column in the row
 		for (size_t column = 0; column < Board::MAX_COLUMNS;
 			++column)
 		{
 			const int BASE = 10;
+
+			// Multiply the hase code by the BASE
+			// to shift everything over.
 			hashCode = hashCode * BASE;
+
+			// If the piece at this square is NONE,
+			// add 0.
 			if (pieces_[row][column] == Board::NONE)
 			{
-				hashCode += 0;
+				hashCode += NONE_VAL;
 			}
+			// Else, if it is X, add 1
 			else if (pieces_[row][column] == Board::X)
 			{
-				hashCode += 1;
+				hashCode += X_VAL;
 			}
+			// Else, it is O so add 2.
 			else
 			{
-				hashCode += 2;
+				hashCode += O_VAL;
 			}
 
 		}
