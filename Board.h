@@ -1,7 +1,7 @@
 /**
 Name: Jeff McCullen and Emma Elliott
 Date: February 10, 2016
-Description: 
+Description: Board prototype for a game of 3x3 tic tac toe.
 */
 
 #ifndef BOARD_H
@@ -12,18 +12,53 @@ Description:
 class Board
 {
 public:
-	// member variables
+	// A tic tac toe piece is that which fills a square on the board
+	// and can be either X, O, or nothing.
 	enum Piece{X=0, O, NONE};
+
+	// A tic tac toe board has 3 rows and 3 columns.
 	enum {MAX_ROWS = 3};
 	enum {MAX_COLUMNS = 3};
+
+	// There are three kinds of tic tac toe pieces (X, O, and NONE).
 	enum {PIECES = 3};
+
+	// The possible states of a tic tac toe board are
+	//  - X won the game
+	//  - O won the game
+	//  - Draw
+	//  - The game has not finished yet.
 	enum State{XWINS, OWINS, DRAW, INCOMPLETE};
 
-	// methods
+	/**
+	Construct a default board.
+	*/
 	Board();
+
+	/**
+	Construct a board given another board.
+
+	@param original The board to copy.
+	*/
 	Board(const Board& original);
 
+	/**
+	Assign the board on the rhs to the board on the lhs.
+	This will make a deep copy.
+
+	@param rhs The board on the rhs that you are assigning.
+	@return This board after the assignment.
+	*/
 	Board& operator=(const Board& rhs);
+
+	/**
+	Determine wheather two boards are equivalent. They are equivalent
+	if each square has the same piece.
+
+	@param rhs The board on the right hand side.
+	@return True if the lhs and rhs board have the same piece in every
+	square.
+	*/
 	bool operator==(const Board& rhs) const;
 	bool operator!=(const Board& rhs) const;
 
@@ -32,7 +67,12 @@ public:
 	void playPiece(int row, int column, Piece piece)
 		throw (IllegalMoveException);
 
-	// [jrm] throw exception!!!!
+	/**
+	Set the square at the given row and column to NONE.
+
+	@param row The row of the board.
+	@param column The column of the board.
+	*/
 	virtual void unplacePiece(int row, int column);
 
 	/*
@@ -62,14 +102,31 @@ public:
 	*/
 	virtual void drawBoard(std::ostream& out) const;
 
+	/**
+	Destruct the board.
+	*/
 	virtual ~Board();
 
 private:
-	//Piece Pieces_[MAX_ROWS][MAX_COLUMNS];
+	// Note: You could do this if you did not want to use
+	// dynamic memory allocation.
+	// Piece Pieces_[MAX_ROWS][MAX_COLUMNS];
+
+	// Field to store the piece in each square.
 	Piece** pieces_;
+
+	/**
+	Initialize every square in the pieces_ field to NONE.
+	*/
 	virtual Piece** initPieces();
 
+	// Keep track of the number of moves. Note that unplacing a piece
+	// will decrement this unless the user tried to unplace a piece
+	// on a square which was already set to NONE, in which case
+	// it will stay the same.
 	size_t nMoves_;
+
+	// The maximum number of moves in a tic tac toe game.
 	static const size_t MAX_NUM_OF_MOVES = 9;
 
 	/**
@@ -93,10 +150,18 @@ private:
 	*/
 	virtual bool diagonalWin(Board::State& state) const;
 
+	/**
+	Get an allocated copy of the pieces.
+
+	@param pieces The pieces to copy.
+	@return The allocated copy of pieces.
+	*/
 	virtual Piece** allocateAndCopy(Piece** pieces) const;
+
+	/**
+	Destroy a board, freeing up any allocated memory.
+	*/
 	virtual void destroyBoard() const;
-
-
 };
 
 #endif //BOARD_H

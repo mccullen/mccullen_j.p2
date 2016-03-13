@@ -243,10 +243,20 @@ void Board::drawBoard(std::ostream& out) const
 	}
 
 }
+
+/**
+Set the square at the given row and column to NONE.
+
+@param row The row of the board.
+@param column The column of the board.
+*/
 void Board::unplacePiece(int row, int column)
 {
+	if (pieces_[row][column] != Board::NONE)
+	{
+		--nMoves_;
+	}
 	pieces_[row][column] = Board::NONE;
-	--nMoves_;
 }
 
 
