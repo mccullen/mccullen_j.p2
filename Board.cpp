@@ -112,17 +112,22 @@ square.
 bool Board::operator==(const Board& rhs) const
 {
 
-	for (int i = 0; i < 3; ++i)
+	bool retVal = true;
+	// For every row
+	for (int i = 0; i < Board::MAX_ROWS && retVal; ++i)
 	{
-		for (int j = 0; j < 3; ++j)
+		// For every column in that row
+		for (int j = 0; j < Board::MAX_COLUMNS && retVal; ++j)
 		{
+			// if the piece at that square is different,
+			// return false.
 			if (checkPiece(i,j) != rhs.checkPiece(i,j))
 			{
-				return false;
+				retVal = false;
 			}
 		}
 	}
-	return true;
+	return retVal;
 }
 
 bool Board::operator!=(const Board& rhs) const
