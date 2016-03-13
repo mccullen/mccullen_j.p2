@@ -11,60 +11,104 @@ Description:
 #include "Board.h"
 using namespace std;
 
-// methods
+/**
+Construct a default board.
+*/
 Board::Board() : pieces_(initPieces()), nMoves_(0)
 {
 }
 
-// [jrm] can you do this statically? will it go out of scope?
+/**
+Initialize every square in the pieces_ field to NONE.
+*/
 Board::Piece** Board::initPieces()
 {
+	// Allocate memory for the pieces's rows
 	Board::Piece** pieces = new Board::Piece*[Board::MAX_ROWS];
+
+	// For every row
 	for (size_t row = 0; row < Board::MAX_ROWS; ++row)
 	{
+		// allocate memory for the pieces columns
 		pieces[row] = new Board::Piece[Board::MAX_COLUMNS];
+		// for every column in the row
 		for (size_t column = 0; column < Board::MAX_COLUMNS;
 			++column)
 		{
+			// set its inital value to NONE.
 			pieces[row][column] = Board::NONE;
 		}
 	}
 	return pieces;
 }
 
+/**
+Construct a board given another board.
+
+@param original The board to copy.
+*/
 Board::Board(const Board& original) : 
 	pieces_(allocateAndCopy(original.pieces_)),
 	nMoves_(original.nMoves_)
 {
 }
 
+/**
+Assign the board on the rhs to the board on the lhs.
+This will make a deep copy.
+
+@param rhs The board on the rhs that you are assigning.
+@return This board after the assignment.
+*/
 Board& Board::operator=(const Board& rhs)
 {
+	// If not self assignment
 	if (this != &rhs)
 	{
+		// destroy any allocated memory
 		destroyBoard();
 
-		nMoves_ = rhs.nMoves_;	
+		// assign and allocate new values.
+		nMoves_ = rhs.nMoves_;
 		pieces_ = allocateAndCopy(rhs.pieces_);
 	}
 	return *this;
 }
 
+/**
+Get an allocated copy of the pieces.
+
+@param pieces The pieces to copy.
+@return The allocated copy of pieces.
+*/
 Board::Piece** Board::allocateAndCopy(Piece** pieces) const
 {
+	// Allocate memory for the copy's rows
 	Piece** copy = new Board::Piece*[Board::MAX_ROWS];
+	// For every row in the copy
 	for (size_t row = 0; row < Board::MAX_ROWS; ++row)
 	{
+		// allocate memory for the copy's columns
 		copy[row] = new Board::Piece[Board::MAX_COLUMNS];
+		// for every column in the row
 		for (size_t column = 0; column < MAX_COLUMNS;
 			++column)
 		{
+			// assign the pieces value to the copy.
 			copy[row][column] = pieces[row][column];
 		}
 	}
 	return copy;
 }
 
+/**
+Determine wheather two boards are equivalent. They are equivalent
+if each square has the same piece.
+
+@param rhs The board on the right hand side.
+@return True if the lhs and rhs board have the same piece in every
+square.
+*/
 bool Board::operator==(const Board& rhs) const
 {
 
@@ -79,21 +123,6 @@ bool Board::operator==(const Board& rhs) const
 		}
 	}
 	return true;
-	/*
-	size_t row = 0;
-	size_t column = 0;
-	while (row < Board::MAX_ROWS && 
-		pieces_[row][column] == rhs.pieces_[row][column])
-	{
-		while (column < Board::MAX_COLUMNS &&
-			pieces_[row][column] == rhs.pieces_[row][column])
-		{
-			++column;
-		}
-		++row;
-	}
-	return row == Board::MAX_ROWS;
-	*/
 }
 
 bool Board::operator!=(const Board& rhs) const
