@@ -182,7 +182,7 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 
 	// While not at the end of the bucket AND
 	// you have not yet found the key in the bucket.
-	while (iter != bucket.end())// && !equal_((*iter).first, key))
+	while (iter != bucket.end() && !retVal)// && !equal_((*iter).first, key))
 	{
 		// if the key is in the bucket, return true
 		if (equal_((*iter).first,key))
