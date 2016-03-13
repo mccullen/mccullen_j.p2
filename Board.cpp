@@ -265,11 +265,15 @@ void Board::drawBoard(std::ostream& out) const
 	std::string spacing = "   |   |   ";
 	std::string outline = "---+---+---";
 
+	// For every row
 	for (size_t row = 0; row < Board::MAX_ROWS; ++row)
 	{
-		cout << spacing << endl;
+		// output the spacing
+		out << spacing << endl;
+		// For every column in the row
 		for (size_t column = 0; column < Board::MAX_COLUMNS; ++column)
 		{
+			// output the piece
 			switch (pieces_[row][column])
 			{
 			case X:
@@ -284,13 +288,16 @@ void Board::drawBoard(std::ostream& out) const
 			default:
 				break;
 			}
+			// If not at the end of a column, print a bar.
 			if (column < Board::MAX_COLUMNS - 1)
 			{
 				out << "|";
 			}
 		}
+		// end the line and output spacing
 		out << endl;
 		out << spacing << endl;
+		// If not at the end of the row, output more spacing.
 		if (row < Board::MAX_ROWS - 1)
 		{
 			out << outline << endl;
@@ -307,10 +314,13 @@ Set the square at the given row and column to NONE.
 */
 void Board::unplacePiece(int row, int column)
 {
+	// If there is something to unplace, decrement the
+	// number of moves.
 	if (pieces_[row][column] != Board::NONE)
 	{
 		--nMoves_;
 	}
+	// Set the row and column to none.
 	pieces_[row][column] = Board::NONE;
 }
 
@@ -450,15 +460,25 @@ bool Board::diagonalWin(Board::State& state) const
 
 	return winnerCheck;
 }
+
+/**
+Destroy a board, freeing up any allocated memory.
+*/
 void Board::destroyBoard() const
 {
+	// For every row allocated in pieces_
 	for (size_t row = 0; row < Board::MAX_ROWS; ++row)
 	{
+		// delete everything it points to
 		delete [] pieces_[row];
 	}
+	// delete everything pieces_ points to.
 	delete [] pieces_;
 }
 
+/**
+Destory the board, freeing up all allocated memory.
+*/
 Board::~Board()
 {
 	destroyBoard();
