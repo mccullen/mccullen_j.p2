@@ -253,7 +253,8 @@ bool LCHashMap<Key, Value, HashFn, Equator>::erase(const Key& key)
 	typename std::list<std::pair<Key,Value> >::iterator iter = 
 		bucket.begin();
 
-	// [jrm] this is probably wrong...
+	// [jrm] this is probably wrong...should probably put the if
+	// statement in the body of this loop.
 	// While 
 	while (iter != bucket.end() && !equal_((*iter).first, key))
 	{
@@ -290,16 +291,16 @@ Value& LCHashMap<Key, Value, HashFn, Equator>::operator[](const Key& key)
 	typename std::list<std::pair<Key, Value> >::iterator iter = 
 		bucket.begin();
 
+	// [jrm] the if statement should probably be in the body of this
+	// loop.
 	while (iter != bucket.end() && !equal_((*iter).first, key))
 	{
 		++iter;
 	}
+	// If the key was not found, insert it into the table
 	if (iter == bucket.end())
 	{
 		bucket.push_back(std::pair<Key,Value>(key, Value()));
-		//typename std::list<std::pair<Key,Value> >::iterator i = bucket.end();
-		//--i;
-		//return (*i).second;
 		iter = --bucket.end();
 		++size_;
 	}
@@ -311,31 +312,6 @@ template <typename Key, typename Value, typename HashFn,
 	typename Equator>
 bool LCHashMap<Key, Value, HashFn, Equator>::in(const Key& key) const
 {
-	//bool retVal = false;
-
-	//// Hash the key
-	//size_t hashCode = hashFn_(key);
-
-	//// Compress it
-	//size_t index = compress(hashCode);
-
-	//// Get bucket
-	//const std::list<std::pair<Key,Value> >& bucket = 
-	//	table_[index];
-
-	//typename std::list<std::pair<Key,Value> >::const_iterator iter = 
-	//	bucket.begin();
-
-	//while (iter != bucket.end() && !equal_((*iter).first, key))
-	//{
-	//	if (equal_((*iter).first,key))
-	//	{
-	//		return true;
-	//	}
-	//	++iter;
-	//}
-	//return false;//iter != bucket.end();
-
 	bool retVal = false;
 
 	// Hash the key
@@ -375,12 +351,10 @@ template <typename Key, typename Value, typename HashFn,
 void LCHashMap<Key, Value, HashFn, Equator>::clear()
 {
 	// For every chain in the table, clear it.
-	//for (size_t i = 0; i < table_.size(); ++i)
 	for (typename std::vector<std::list<std::pair<Key,Value> > >::
 		iterator iter = table_.begin();
 		iter != table_.end(); ++iter)
 	{
-		//(table_[i]).clear();
 		(*iter).clear();
 	}
 	size_ = 0;
