@@ -76,7 +76,7 @@ private:
 
 	// Large prime number to determine the inital size
 	// of the table.
-	static const int LARGE_PRIME = 16908799;
+	static const int LARGE_PRIME = 5;//16908799;
 
 	/**
 	rehash
@@ -182,7 +182,6 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 
 	// While not at the end of the bucket AND
 	// you have not yet found the key in the bucket.
-	// [jrm] flag.
 	while (iter != bucket.end() && !retVal)// && !equal_((*iter).first, key))
 	{
 		// if the key is in the bucket, return true
@@ -195,7 +194,7 @@ bool LCHashMap<Key,Value,HashFn,Equator>::contains(
 	return retVal;//iter != bucket.end();
 }
 
-/* constructor [jrm] can you resize in a more efficient way? */
+/* constructor */
 template <typename Key, typename Value, typename HashFn,
 	typename Equator>
 LCHashMap<Key, Value, HashFn, Equator>::LCHashMap() : size_(0)
@@ -249,12 +248,12 @@ bool LCHashMap<Key, Value, HashFn, Equator>::erase(const Key& key)
 	// Compress it to determine the bucket
 	size_t index = compress(hashCode);
 
+	// Get bucket and iterator to beginning of bucket.
 	std::list<std::pair<Key,Value> >& bucket = table_[index];
 	typename std::list<std::pair<Key,Value> >::iterator iter = 
 		bucket.begin();
 
-	// [jrm] this is probably wrong...should probably put the if
-	// statement in the body of this loop.
+	// [jrm] should you use flag here instead?
 	// While 
 	while (iter != bucket.end() && !equal_((*iter).first, key))
 	{
@@ -291,8 +290,7 @@ Value& LCHashMap<Key, Value, HashFn, Equator>::operator[](const Key& key)
 	typename std::list<std::pair<Key, Value> >::iterator iter = 
 		bucket.begin();
 
-	// [jrm] the if statement should probably be in the body of this
-	// loop.
+	// [jrm] use flag instead?
 	while (iter != bucket.end() && !equal_((*iter).first, key))
 	{
 		++iter;
