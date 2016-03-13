@@ -299,6 +299,7 @@ Value& LCHashMap<Key, Value, HashFn, Equator>::operator[](const Key& key)
 	if (iter == bucket.end())
 	{
 		bucket.push_back(std::pair<Key,Value>(key, Value()));
+		// Reset iter to point to the newly inserted item.
 		iter = --bucket.end();
 		++size_;
 	}
